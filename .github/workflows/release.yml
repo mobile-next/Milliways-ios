@@ -1,0 +1,23 @@
+name: Build and Release IPA
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build unsigned IPA
+        run: make ipa
+
+      - name: Upload IPA to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/Milliways-unsigned.ipa
