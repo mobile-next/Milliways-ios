@@ -5,6 +5,9 @@ on:
     tags:
       - '*.*.*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-latest
@@ -17,7 +20,12 @@ jobs:
       - name: Build unsigned IPA
         run: make ipa
 
-      - name: Upload IPA to release
+      - name: Build simulator zip
+        run: make zip
+
+      - name: Upload artifacts to release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/Milliways-unsigned.ipa
+          files: |
+            build/Milliways-unsigned.ipa
+            build/Milliways-simulator.zip

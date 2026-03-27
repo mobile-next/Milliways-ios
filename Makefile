@@ -7,7 +7,7 @@ APP_PATH = $(BUILD_DIR)/Build/Products/Debug-iphonesimulator/$(SCHEME).app
 ARCHIVE_PATH = $(BUILD_DIR)/$(SCHEME).xcarchive
 IPA_DIR = $(BUILD_DIR)/ipa
 
-.PHONY: build install run clean boot ipa
+.PHONY: build install run clean boot ipa zip
 
 build:
 	xcodebuild \
@@ -27,6 +27,10 @@ install: build boot
 
 run: install
 	xcrun simctl launch "$(DEVICE_ID)" $(shell defaults read "$(CURDIR)/$(APP_PATH)/Info.plist" CFBundleIdentifier)
+
+zip: build
+	cd $(BUILD_DIR)/Build/Products/Debug-iphonesimulator && zip -r $(CURDIR)/$(BUILD_DIR)/$(SCHEME)-simulator.zip $(SCHEME).app
+	@echo "Created $(BUILD_DIR)/$(SCHEME)-simulator.zip"
 
 ipa:
 	xcodebuild archive \
