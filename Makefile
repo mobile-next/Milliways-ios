@@ -7,7 +7,7 @@ APP_PATH = $(BUILD_DIR)/Build/Products/Debug-iphonesimulator/$(SCHEME).app
 ARCHIVE_PATH = $(BUILD_DIR)/$(SCHEME).xcarchive
 IPA_DIR = $(BUILD_DIR)/ipa
 
-.PHONY: build install run clean boot ipa zip
+.PHONY: build install run clean boot ipa zip test
 
 build:
 	xcodebuild \
@@ -47,6 +47,9 @@ ipa:
 	cd $(IPA_DIR) && zip -r ../$(SCHEME)-unsigned.ipa Payload
 	rm -rf $(IPA_DIR)
 	@echo "Created $(BUILD_DIR)/$(SCHEME)-unsigned.ipa"
+
+test:
+	npm init -y && npm install mobilewright && npx mobilewright test
 
 clean:
 	xcodebuild \
