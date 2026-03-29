@@ -1,0 +1,41 @@
+name: Run Mobilewright
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  upload:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_SAMPLES_UPLOAD_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Boot iOS Simulator
+        run: |
+          UDID=$(xcrun simctl create "milliways-ci" "iPhone 16" "com.apple.CoreSimulator.SimRuntime.iOS-26-0")
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+
+      - name: Build and install app
+        run: |
+          make zip
+          make install
+
+      - name: Run the tests
+        run: make test
+
+      - name: Upload samples to S3
+        run: |
+          GITSHA=$( git rev-parse HEAD )
+          aws s3 cp --recursive --acl public-read mobilewright-report/ s3://mobilewright-samples/milliways/runs/$GITSHA
+
