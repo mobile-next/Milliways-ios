@@ -15,26 +15,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      
-      - name: Install xcbeautify
-        run: brew install xcbeautify
-
       - name: Build .ipa for iOS real device
         run: |
           # create an .ipa file for real iOS devices
-          make ipa | xcbeautify
+          make -j2 ipa | xcbeautify
 
       - name: Run tests using mobilewright
+        env:
+          MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
           # install mobilewright
           npm install --no-save mobilewright@latest
 
           # allocate devices
-          export MOBILECLI_TOKEN="${{ secrets.MOBILEFLEET_API_KEY }}"
-          npx -y @mobilenext/mobilecli fleet allocate --platform "ios" --name "Apple iPhone 16*" --version ">=18"
-          npx -y @mobilenext/mobilecli devices -v      
-          sleep 300
-          npx mobilewright devices
+          npx -y @mobilenext/mobilecli@0.1.64 fleet allocate --platform "ios" --version "18.6.2" --verbose --wait --timeout 600
+          npx -y @mobilenext/mobilecli devices -v
           npx -y @mobilenext/mobilecli apps install ./build/Milliways-unsigned.ipa
           # one of the tests is supposed to fail
           npx mobilewright test --reporter html || true
@@ -47,6 +42,6 @@ jobs:
       - name: Upload samples to S3
         run: |
           GITSHA=$( git rev-parse HEAD )
-          ls -lR
-          aws s3 cp --recursive --acl public-read mobilewright-report s3://mobilewright-samples/milliways/runs/$GITSHA
+          aws s3 cp --quiet --recursive --acl public-read mobilewright-report s3://mobilewright-samples/milliways/runs/$GITSHA
+          echo "→ Report uploaded to https://mobilewright-samples.s3.amazonaws.com/milliways/runs/$GITSHA/index.html"
 
