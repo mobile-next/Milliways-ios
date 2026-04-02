@@ -36,7 +36,7 @@ jobs:
           MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
           npx mobilewright test --reporter html || true
-          npx -y @mobilenext/mobilecli crashes list
+          npx -y @mobilenext/mobilecli crashes list || true
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
