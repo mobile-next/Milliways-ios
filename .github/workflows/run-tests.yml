@@ -15,11 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build and run tests on mobilefleet
+      
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Build .ipa for iOS real device
         run: |
           # create an .ipa file for real iOS devices
-          make ipa
+          make ipa | xcbeautify
 
+      - name: Run tests using mobilewright
+        run: |
           # install mobilewright
           npm install --no-save mobilewright@latest
 
@@ -29,6 +35,7 @@ jobs:
           npx -y @mobilenext/mobilecli devices -v      
           sleep 200
           npx mobilewright devices
+          npx -y @mobilenext/mobilecli apps install ./build/Milliways-unsigned.ipa
           npx mobilewright test
 
       - uses: aws-actions/configure-aws-credentials@v4
