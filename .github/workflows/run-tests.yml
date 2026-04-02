@@ -17,22 +17,26 @@ jobs:
 
       - name: Build .ipa for iOS real device
         run: |
-          # create an .ipa file for real iOS devices
-          make -j2 ipa | xcbeautify
+          make ipa
+
+      - name: Install mobilewright
+        run: |
+          npm install --no-save mobilewright@latest
 
       - name: Run tests using mobilewright
         env:
           MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
-          # install mobilewright
-          npm install --no-save mobilewright@latest
-
-          # allocate devices
           npx -y @mobilenext/mobilecli@0.1.64 fleet allocate --platform "ios" --version "18.6.2" --verbose --wait --timeout 600
           npx -y @mobilenext/mobilecli devices -v
           npx -y @mobilenext/mobilecli apps install ./build/Milliways-unsigned.ipa
-          # one of the tests is supposed to fail
+
+      - name: Run tests using mobilewright
+        env:
+          MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
+        run: |
           npx mobilewright test --reporter html || true
+          npx -y @mobilenext/mobilecli crashes list
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
