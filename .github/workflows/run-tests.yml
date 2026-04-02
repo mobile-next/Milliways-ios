@@ -2,7 +2,7 @@ name: Run Mobilewright
 
 on:
   push:
-    branches: [main]
+    branches: ["*"]
   workflow_dispatch:
 
 permissions:
@@ -15,24 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Build and run tests on mobilefleet
+        run: |
+          # create an .ipa file for real iOS devices
+          make ipa
+
+          # install mobilewright
+          npm install --no-save mobilewright@latest
+
+          # allocate devics
+          export MOBILECLI_TOKEN="${{ secrets.MOBILEFLEET_API_KEY }}"
+          npx -y @mobilenext/mobilecli fleet allocate --platform "ios" --name "Apple iPhone 16*" --version ">=18"
+          npx -y @mobilenext/mobilecli devices -v      
+          sleep 200
+          npx mobilewright devices
+          npx mobilewright test
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_SAMPLES_UPLOAD_ROLE_ARN }}
           aws-region: us-west-2
-
-      - name: Boot iOS Simulator
-        run: |
-          UDID=$(xcrun simctl create "milliways-ci" "iPhone 16" "com.apple.CoreSimulator.SimRuntime.iOS-26-0")
-          xcrun simctl boot "$UDID"
-          xcrun simctl bootstatus "$UDID" -b
-
-      - name: Build and install app
-        run: |
-          make zip
-          make install
-
-      - name: Run the tests
-        run: make test
 
       - name: Upload samples to S3
         run: |
