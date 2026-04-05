@@ -1,0 +1,16 @@
+{
+  "name": "milliways-ios-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx mobilewright test --reporter='list,html'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mobilewright/test": "^0.0.18",
+    "mobilewright": "^0.0.18"
+  }
+}
