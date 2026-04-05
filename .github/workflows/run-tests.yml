@@ -13,7 +13,7 @@ jobs:
   upload:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build .ipa for iOS real device
         run: |
@@ -38,7 +38,7 @@ jobs:
           # adding "|| true" because some of the tests are expected to fail
           npx mobilewright test --reporter='list,html' || true
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_SAMPLES_UPLOAD_ROLE_ARN }}
           aws-region: us-west-2
