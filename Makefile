@@ -36,7 +36,7 @@ ipa:
 	xcodebuild archive \
 		-project $(PROJECT) \
 		-scheme $(SCHEME) \
-		-configuration Release \
+		-configuration Debug \
 		-destination "generic/platform=iOS" \
 		-archivePath $(ARCHIVE_PATH) \
 		CODE_SIGN_IDENTITY="" \
