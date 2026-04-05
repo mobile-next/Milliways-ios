@@ -36,7 +36,7 @@ jobs:
           MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
           # adding "|| true" because some of the tests are expected to fail
-          npx mobilewright test --reporter html || true
+          npx mobilewright test --reporter='list,html' || true
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
