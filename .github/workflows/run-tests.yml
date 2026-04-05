@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  upload:
+  build:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
@@ -19,22 +19,58 @@ jobs:
         run: |
           make ipa
 
+      - name: Upload .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipa-build
+          path: build/Milliways-unsigned.ipa
+
+  test:
+    runs-on: macos-latest
+    needs: build
+    env:
+      MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download .ipa artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ipa-build
+          path: build
+
       - name: Allocate real iOS device
-        env:
-          MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
           npx -y @mobilenext/mobilecli fleet allocate --platform "ios" --version "18.6.2" --verbose --wait --timeout 600
           npx -y @mobilenext/mobilecli devices -v
           npx -y @mobilenext/mobilecli apps install ./build/Milliways-unsigned.ipa
 
       - name: Run tests using mobilewright
-        env:
-          MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
           # some of the tests are expected to fail, so we're adding || true
-          cd test
+          cd tests
           npm install --ignore-scripts
           npm run test || true
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobilewright-report
+          path: tests/mobilewright-report
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download test report
+        uses: actions/download-artifact@v4
+        with:
+          name: mobilewright-report
+          path: tests/mobilewright-report
 
       - uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -46,4 +82,3 @@ jobs:
           GITSHA=$( git rev-parse HEAD )
           aws s3 cp --quiet --recursive --acl public-read tests/mobilewright-report s3://mobilewright-samples/milliways/runs/$GITSHA
           echo "→ Report uploaded to https://mobilewright-samples.s3.amazonaws.com/milliways/runs/$GITSHA/index.html"
-
