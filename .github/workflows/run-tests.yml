@@ -19,11 +19,7 @@ jobs:
         run: |
           make ipa
 
-      - name: Install mobilewright
-        run: |
-          npm install --no-save mobilewright@latest
-
-      - name: Run tests using mobilewright
+      - name: Allocate real iOS device
         env:
           MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
@@ -35,8 +31,10 @@ jobs:
         env:
           MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
-          # adding "|| true" because some of the tests are expected to fail
-          npx mobilewright test --reporter='list,html' || true
+          # some of the tests are expected to fail, so we're adding || true
+          cd test
+          npm install --ignore-scripts
+          npm run test || true
 
       - uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -46,6 +44,6 @@ jobs:
       - name: Upload samples to S3
         run: |
           GITSHA=$( git rev-parse HEAD )
-          aws s3 cp --quiet --recursive --acl public-read mobilewright-report s3://mobilewright-samples/milliways/runs/$GITSHA
+          aws s3 cp --quiet --recursive --acl public-read tests/mobilewright-report s3://mobilewright-samples/milliways/runs/$GITSHA
           echo "→ Report uploaded to https://mobilewright-samples.s3.amazonaws.com/milliways/runs/$GITSHA/index.html"
 

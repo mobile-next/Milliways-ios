@@ -1,4 +1,5 @@
 build
 xcuserdata/
-mobilewright-report
-test-results
+**/mobilewright-report
+**/test-results
+**/node_modules
