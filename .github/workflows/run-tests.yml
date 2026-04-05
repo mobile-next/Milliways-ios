@@ -27,7 +27,7 @@ jobs:
         env:
           MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
-          npx -y @mobilenext/mobilecli@0.1.64 fleet allocate --platform "ios" --version "18.6.2" --verbose --wait --timeout 600
+          npx -y @mobilenext/mobilecli fleet allocate --platform "ios" --version "18.6.2" --verbose --wait --timeout 600
           npx -y @mobilenext/mobilecli devices -v
           npx -y @mobilenext/mobilecli apps install ./build/Milliways-unsigned.ipa
 
@@ -35,8 +35,8 @@ jobs:
         env:
           MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
         run: |
+          # adding "|| true" because some of the tests are expected to fail
           npx mobilewright test --reporter html || true
-          npx -y @mobilenext/mobilecli crashes list || true
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
