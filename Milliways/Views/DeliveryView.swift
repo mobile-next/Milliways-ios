@@ -55,7 +55,6 @@ struct DeliveryView: View {
         }
         .overlay(alignment: .topTrailing) {
             Button(action: {
-                orderManager.clearOrder()
                 dismiss()
                 onClose()
             }) {

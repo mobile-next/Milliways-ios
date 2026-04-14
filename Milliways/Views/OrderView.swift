@@ -108,7 +108,9 @@ struct OrderView: View {
         .navigationTitle("Your Order")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(false)
-        .fullScreenCover(isPresented: $showDelivery) {
+        .fullScreenCover(isPresented: $showDelivery, onDismiss: {
+            orderManager.clearOrder()
+        }) {
             DeliveryView(orderManager: orderManager) {
                 popToRoot = false
             }
