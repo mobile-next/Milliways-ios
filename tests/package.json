@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mobilewright/test": "^0.0.18",
-    "mobilewright": "^0.0.18"
+    "@mobilewright/test": "^0.0.21",
+    "mobilewright": "^0.0.21"
   }
 }
