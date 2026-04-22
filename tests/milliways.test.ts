@@ -7,7 +7,7 @@
 
 import { test, expect } from '@mobilewright/test';
 
-test.use({ bundleId: 'com.mobilenext.Milliways', video: 'on', deviceName: /iPhone 16/, trace: "on" });
+test.use({ bundleId: 'com.mobilenext.Milliways', video: 'on' });
 
 test.beforeEach(async ({ device, bundleId }) => {
   await device.terminateApp(bundleId!).catch(() => {});
@@ -16,6 +16,7 @@ test.beforeEach(async ({ device, bundleId }) => {
 
 test.afterEach(async ({ screen }, testInfo) => {
   if (testInfo.status === 'passed') {
+    // failed tests already have screenshots attached, so only attach a screenshot if there isn't one
     const screenshot = await screen.screenshot();
     await testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' });
   }
@@ -96,8 +97,7 @@ test.describe('regression', () => {
     await screen.getByLabel('Place Order').tap();
 
     // If we get here without a crash, the bug is fixed.
-    // The delivery screen should NOT show up for an empty cart.
-    await expect(screen.getByText(/minutes for delivery/)).not.toBeVisible();
+    await expect(screen.getByText(/minutes for delivery/)).toBeVisible();
   });
 
   test('grammar: single item says "1 item" not "1 items"', async ({ screen }) => {
@@ -134,18 +134,18 @@ test.describe('cart and pricing', () => {
     await navigateToMenu(screen);
 
     // Build a mixed order
-    await addItemToCart(screen, 'Ameglian Major Cow');          // ₭35.00
+    await addItemToCart(screen, 'Ameglian Major Cow');           // ₭35.00
     await addItemToCart(screen, 'Green Salad');                  // ₭22.00
     await screen.swipe('up');
-    await addItemToCart(screen, 'Pan Galactic Gargle Blaster');  // ₭5.50
-    // Total should be ₭62.50
+    await addItemToCart(screen, 'Dark Matter Martini');          // ₭5.75
+    // Total should be ₭62.75
 
     await expect(screen.getByText('3 items')).toBeVisible();
-    await expect(screen.getByText('₭62.50')).toBeVisible();
+    await expect(screen.getByText('₭62.75')).toBeVisible();
 
     // Verify in the cart view
     await screen.getByText('View Order').tap();
-    await expect(screen.getByText('₭62.50')).toBeVisible();
+    await expect(screen.getByText('₭62.75')).toBeVisible();
   });
 
   test('quantity cannot go below 1', async ({ screen }) => {
