@@ -43,10 +43,10 @@ jobs:
           path: build
 
       - name: Run tests using mobilewright
+        working-directory: tests
         run: |
           # some of the tests are expected to fail, so we're adding || true
-          cd tests
-          npm install --ignore-scripts
+          npm ci --ignore-scripts
           npm run test || true
 
       - name: Upload test report

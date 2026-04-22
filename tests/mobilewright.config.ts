@@ -16,7 +16,7 @@ const config: MobilewrightConfig = {
   // we want both list on screen, and an html directory
   reporter: [
     ['list'],
-    ['html'],
+    ['html', { outputFolder: 'mobilewright-report' }],
   ],
 };
 
