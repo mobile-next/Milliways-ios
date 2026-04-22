@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx mobilewright test --reporter='list,html'"
+    "test": "npx mobilewright test"
   },
   "keywords": [],
   "author": "",
