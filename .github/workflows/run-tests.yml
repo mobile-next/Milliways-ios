@@ -59,7 +59,7 @@ jobs:
           name: mobilewright-report
           path: tests/mobilewright-report
 
-  publish:
+  upload_test_results:
     runs-on: ubuntu-latest
     needs: test
     if: always()
