@@ -61,6 +61,7 @@ test.describe('ordering flow', () => {
 
     // Add a cow and a coffee
     await addItemToCart(screen, 'Ameglian Major Cow');
+    await expect(screen.getByText('MAIN DISHES')).toBeVisible();
     await screen.swipe('up');
     await addItemToCart(screen, 'Coffee');
 
@@ -135,7 +136,9 @@ test.describe('cart and pricing', () => {
 
     // Build a mixed order
     await addItemToCart(screen, 'Ameglian Major Cow');           // ₭35.00
+    await expect(screen.getByText('MAIN DISHES')).toBeVisible();
     await addItemToCart(screen, 'Green Salad');                  // ₭22.00
+    await expect(screen.getByText('MAIN DISHES')).toBeVisible();
     await screen.swipe('up');
     await addItemToCart(screen, 'Dark Matter Martini');          // ₭5.75
     // Total should be ₭62.75
