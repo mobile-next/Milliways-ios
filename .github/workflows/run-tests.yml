@@ -26,7 +26,7 @@ jobs:
           path: build/Milliways-unsigned.ipa
 
   test:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     needs: build
     env:
       MOBILECLI_TOKEN: ${{ secrets.MOBILEFLEET_API_KEY }}
