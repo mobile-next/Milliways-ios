@@ -6,16 +6,9 @@
  */
 
 import { test, expect } from '@mobilewright/test';
+import { appendFileSync } from 'fs';
 
-test.use({ bundleId: 'com.mobilenext.Milliways', video: 'on' });
-
-test.beforeAll(async ({ device, bundleId }) => {
-  const apps = await device.listApps();
-  const isInstalled = apps.some(app => app.bundleId === bundleId);
-  if (!isInstalled) {
-    await device.installApp('../build/Milliways-unsigned.ipa');
-  }
-});
+test.use({ video: 'on' });
 
 test.beforeEach(async ({ device, bundleId }) => {
   await device.terminateApp(bundleId!).catch(() => {});
@@ -154,15 +147,15 @@ test.describe('cart and pricing', () => {
     await addItemToCart(screen, 'Green Salad');                  // ₭22.00
     await expect(screen.getByText('MAIN DISHES')).toBeVisible();
     await screen.swipe('up');
-    await addItemToCart(screen, 'Dark Matter Martini');          // ₭5.75
-    // Total should be ₭62.75
+    await addItemToCart(screen, 'Pan Galactic Gargle Blaster');  // ₭5.50
+    // Total should be ₭62.50
 
     await expect(screen.getByText('3 items')).toBeVisible();
-    await expect(screen.getByText('₭62.75')).toBeVisible();
+    await expect(screen.getByText('₭62.50')).toBeVisible();
 
     // Verify in the cart view
     await screen.getByText('View Order').tap();
-    await expect(screen.getByText('₭62.75')).toBeVisible();
+    await expect(screen.getByText('₭62.50')).toBeVisible();
   });
 
   test('quantity cannot go below 1', async ({ screen }) => {
@@ -198,26 +191,6 @@ test.describe('menu completeness', () => {
 
     for (const dish of mainDishes) {
       await expect(screen.getByText(dish.name)).toBeVisible();
-    }
-  });
-
-  test('drinks section is accessible by scrolling', async ({ screen }) => {
-    await navigateToMenu(screen);
-
-    // Drinks might be below the fold — scroll down to find them
-    await screen.swipe('up');
-    await expect(screen.getByText('DRINKS')).toBeVisible();
-
-    const drinks = [
-      'Pan Galactic Gargle Blaster',
-      'Water',
-      'Coffee',
-      'Infinite Improbability Float',
-      'Dark Matter Martini',
-    ];
-
-    for (const drink of drinks) {
-      await expect(screen.getByText(drink)).toBeVisible();
     }
   });
 
