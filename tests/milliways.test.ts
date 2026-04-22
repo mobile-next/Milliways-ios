@@ -9,6 +9,14 @@ import { test, expect } from '@mobilewright/test';
 
 test.use({ bundleId: 'com.mobilenext.Milliways', video: 'on' });
 
+test.beforeAll(async ({ device, bundleId }) => {
+  const apps = await device.listApps();
+  const isInstalled = apps.some(app => app.bundleId === bundleId);
+  if (!isInstalled) {
+    await device.installApp('../build/Milliways-unsigned.ipa');
+  }
+});
+
 test.beforeEach(async ({ device, bundleId }) => {
   await device.terminateApp(bundleId!).catch(() => {});
   await device.launchApp(bundleId!);
