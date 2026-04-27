@@ -33,10 +33,13 @@ async function navigateToMenu(screen: any) {
 }
 
 async function addItemToCart(screen: any, itemName: string, quantity = 1) {
+  await screen.getByText(itemName).scrollIntoViewIfNeeded();
   await screen.getByText(itemName).tap();
+
   for (let i = 1; i < quantity; i++) {
     await screen.getByLabel('+').tap();
   }
+
   await screen.getByLabel('Add to Order').tap();
 }
 
@@ -63,7 +66,6 @@ test.describe('ordering flow', () => {
     // Add a cow and a coffee
     await addItemToCart(screen, 'Ameglian Major Cow');
     await expect(screen.getByText('MAIN DISHES')).toBeVisible();
-    await screen.swipe('up');
     await addItemToCart(screen, 'Coffee');
 
     // The sticky footer should reflect both items
@@ -89,10 +91,7 @@ test.describe('ordering flow', () => {
 // ---------------------------------------------------------------------------
 
 test.describe('regression', () => {
-  test('empty cart checkout does not crash', async ({ screen }) => {
-    // Expected to fail
-    test.fail();
-
+  test('empty cart checkout does not crash (should fail)', async ({ screen }) => {
     // The app lets you place an order with zero items.
     // DeliveryView accesses items[0] unconditionally — this should crash.
     await navigateToMenu(screen);
@@ -105,10 +104,7 @@ test.describe('regression', () => {
     await expect(screen.getByText(/minutes for delivery/)).toBeVisible();
   });
 
-  test('grammar: single item says "1 item" not "1 items"', async ({ screen }) => {
-    // Expected to fail
-    test.fail();
-
+  test('grammar: single item says "1 item" not "1 items" (should fail)', async ({ screen }) => {
     await navigateToMenu(screen);
     await addItemToCart(screen, 'Green Salad');
 
@@ -144,18 +140,19 @@ test.describe('cart and pricing', () => {
     // Build a mixed order
     await addItemToCart(screen, 'Ameglian Major Cow');           // ₭35.00
     await expect(screen.getByText('MAIN DISHES')).toBeVisible();
+
     await addItemToCart(screen, 'Green Salad');                  // ₭22.00
     await expect(screen.getByText('MAIN DISHES')).toBeVisible();
-    await screen.swipe('up');
-    await addItemToCart(screen, 'Pan Galactic Gargle Blaster');  // ₭5.50
-    // Total should be ₭62.50
 
+    await addItemToCart(screen, 'Coffee');  // ₭4.50
+
+    // Total should be ₭61.50
     await expect(screen.getByText('3 items')).toBeVisible();
-    await expect(screen.getByText('₭62.50')).toBeVisible();
+    await expect(screen.getByText('₭61.50')).toBeVisible();
 
     // Verify in the cart view
     await screen.getByText('View Order').tap();
-    await expect(screen.getByText('₭62.50')).toBeVisible();
+    await expect(screen.getByText('₭61.50')).toBeVisible();
   });
 
   test('quantity cannot go below 1', async ({ screen }) => {
@@ -196,12 +193,17 @@ test.describe('menu completeness', () => {
 
   test('shipping disclaimer is visible at the bottom of the menu', async ({ screen }) => {
     await navigateToMenu(screen);
-    await screen.swipe('up');
-    await screen.swipe('up');
+    await screen.getByText(/Shipping beyond/).scrollIntoViewIfNeeded();
 
     await expect(
       screen.getByText('* Shipping beyond 5 light-years distance might cost extra')
     ).toBeVisible();
+
+    // Now we're at the bottom of the screen, let's scrollIntoViewIfNeeded by swiping down
+    await screen.getByText("Green Salad").scrollIntoViewIfNeeded({ direction: "down" });
+    console.dir(await (await screen.getByText("Green Salad")).boundingBox());
+    console.dir(await (await screen.getByText(/Shipping beyond/)).boundingBox());
+    expect (await screen.getByText("MAIN DISHES")).toBeVisible();
   });
 });
 
@@ -218,10 +220,7 @@ test.describe('account', () => {
     await expect(screen.getByText('My Account')).toBeVisible();
   });
 
-  test('past orders total matches the displayed total spent', async ({ screen }) => {
-    // Expected to fail
-    test.fail();
-
+  test('past orders total matches the displayed total spent (should fail)', async ({ screen }) => {
     await openAccount(screen);
 
     const priceElements = screen.getByText(/₭\d+\.\d+/);
