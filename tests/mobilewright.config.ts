@@ -7,6 +7,9 @@ const config: MobilewrightConfig = {
   // if a test fails, don't try it again
   retries: 0,
 
+  // platform is required
+  platform: 'ios',
+
   // bundle identifier of our app under test
   bundleId: 'com.mobilenext.Milliways',
 
