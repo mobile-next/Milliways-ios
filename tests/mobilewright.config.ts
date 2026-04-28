@@ -1,4 +1,4 @@
-import { defineConfig } from 'mobilewright';
+import { defineConfig, type MobilewrightConfig } from 'mobilewright';
 
 const config: MobilewrightConfig = {
   // tests are in the current directory
@@ -12,6 +12,12 @@ const config: MobilewrightConfig = {
 
   // bundle identifier of our app under test
   bundleId: 'com.mobilenext.Milliways',
+
+  // enable paralllelism on all tests
+  fullyParallel: true,
+
+  // how many workers (devices) at the same time?
+  workers: process.env.CI ? 2 : 1,
 
   // install this app before starting
   installApps: "../build/Milliways-unsigned.ipa",

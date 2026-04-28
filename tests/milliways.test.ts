@@ -201,8 +201,6 @@ test.describe('menu completeness', () => {
 
     // Now we're at the bottom of the screen, let's scrollIntoViewIfNeeded by swiping down
     await screen.getByText("Green Salad").scrollIntoViewIfNeeded({ direction: "down" });
-    console.dir(await (await screen.getByText("Green Salad")).boundingBox());
-    console.dir(await (await screen.getByText(/Shipping beyond/)).boundingBox());
     expect (await screen.getByText("MAIN DISHES")).toBeVisible();
   });
 });
