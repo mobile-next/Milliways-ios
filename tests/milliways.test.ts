@@ -6,7 +6,7 @@
  */
 
 import { test, expect } from '@mobilewright/test';
-import { appendFileSync } from 'fs';
+import type { Screen } from '@mobilewright/core';
 
 test.use({ video: 'on' });
 
@@ -27,12 +27,12 @@ test.afterEach(async ({ screen }, testInfo) => {
 // Helpers
 // ---------------------------------------------------------------------------
 
-async function navigateToMenu(screen: any) {
+async function navigateToMenu(screen: Screen) {
   await screen.getByLabel('New Order').tap();
   await expect(screen.getByText('MAIN DISHES')).toBeVisible();
 }
 
-async function addItemToCart(screen: any, itemName: string, quantity = 1) {
+async function addItemToCart(screen: Screen, itemName: string, quantity = 1) {
   await screen.getByText(itemName).scrollIntoViewIfNeeded();
   await screen.getByText(itemName).tap();
 
@@ -43,7 +43,7 @@ async function addItemToCart(screen: any, itemName: string, quantity = 1) {
   await screen.getByLabel('Add to Order').tap();
 }
 
-async function openCart(screen: any) {
+async function openCart(screen: Screen) {
   await screen.getByLabel('Shopping Cart').tap();
 }
 
@@ -51,7 +51,7 @@ function parsePrice(text: string): number {
   return parseFloat(text.replace('₭', ''));
 }
 
-async function openAccount(screen: any) {
+async function openAccount(screen: Screen) {
   await screen.getByLabel('person.circle').tap();
 }
 
