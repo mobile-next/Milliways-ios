@@ -7,6 +7,9 @@ const config: MobilewrightConfig = {
   // if a test fails, don't try it again
   retries: 0,
 
+  // extra headroom for fixture teardown
+  timeout: 120_000,
+
   // platform is required
   platform: 'ios',
 
