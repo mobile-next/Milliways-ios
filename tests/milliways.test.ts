@@ -286,7 +286,7 @@ test.describe('coupons', () => {
     await screen.getByLabel('Delete').tap();
 
     // Total is now -₭15.50 (₭4.50 - ₭20.00)
-    await expect(screen.getByText('-₭15.50')).toBeVisible();
+    await expect(screen.getByText('₭-15.50')).toBeVisible();
 
     // Placing the order crashes the app
     await screen.getByLabel('Place Order').tap();

@@ -112,6 +112,7 @@ struct OrderView: View {
                                 .textFieldStyle(.roundedBorder)
                                 .autocorrectionDisabled()
                                 .textInputAutocapitalization(.characters)
+                                .accessibilityLabel("Coupon code")
                             Button("Apply") {
                                 if orderManager.applyCoupon(couponCode) {
                                     couponCode = ""
