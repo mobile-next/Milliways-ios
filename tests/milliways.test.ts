@@ -8,7 +8,7 @@
 import { test, expect } from '@mobilewright/test';
 import type { Screen } from '@mobilewright/core';
 
-test.use({ video: 'on' });
+// test.use({ video: 'on' });
 
 test.beforeEach(async ({ device, bundleId }) => {
   await device.terminateApp(bundleId!).catch(() => {});
