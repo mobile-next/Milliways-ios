@@ -22,8 +22,22 @@ const config: MobilewrightConfig = {
   // how many workers (devices) at the same time?
   workers: process.env.CI ? 2 : 1,
 
-  // install this app before starting
-  installApps: "../build/Milliways-unsigned.ipa",
+  projects: [
+    {
+      name: "ios-simulator",
+      use: {
+        platform: "ios",
+        installApps: ["../build/Milliways-simulator.zip"],
+      },
+    },
+    {
+      name: "ios",
+      use: {
+        platform: "ios",
+        installApps: ["../build/Milliways-unsigned.ipa"],
+      }
+    },
+  ],
 
   // we want both list on screen, and an html directory
   reporter: [
