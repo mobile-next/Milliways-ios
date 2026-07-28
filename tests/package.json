@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx mobilewright test"
+    "test": "npx mobilewright test --project ios"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mobilewright/test": "^0.0.45",
-    "mobilewright": "^0.0.45"
+    "@mobilewright/test": "^0.0.50",
+    "mobilewright": "^0.0.50"
   }
 }

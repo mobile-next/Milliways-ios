@@ -22,8 +22,22 @@ const config: MobilewrightConfig = {
   // how many workers (devices) at the same time?
   workers: process.env.CI ? 2 : 1,
 
-  // install this app before starting
-  installApps: "../build/Milliways-unsigned.ipa",
+  projects: [
+    {
+      name: "ios-simulator",
+      use: {
+        platform: "ios",
+        installApps: ["../build/Milliways-simulator.zip"],
+      },
+    },
+    {
+      name: "ios",
+      use: {
+        platform: "ios",
+        installApps: ["../build/Milliways-unsigned.ipa"],
+      }
+    },
+  ],
 
   // we want both list on screen, and an html directory
   reporter: [
@@ -32,12 +46,12 @@ const config: MobilewrightConfig = {
   ],
 };
 
-// if environmet exists, we'll use mobile-use driver and allocate a device on the cloud
+// if environmet exists, we'll use mobilenext driver and allocate a device on the cloud
 // otherwise we run it on a device locally with mobilecli
-if (process.env['MOBILE_USE_API_KEY']) {
+if (process.env['MOBILENEXT_API_KEY']) {
   config.driver = {
-    type: 'mobile-use',
-    apiKey: process.env['MOBILE_USE_API_KEY'],
+    type: 'mobilenext',
+    apiKey: process.env['MOBILENEXT_API_KEY'],
   };
 }
 
