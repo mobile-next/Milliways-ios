@@ -16,6 +16,11 @@ const config: MobilewrightConfig = {
   // bundle identifier of our app under test
   bundleId: 'com.mobilenext.Milliways',
 
+  // beforeEach already terminates and launches the app, so skip the fixture's
+  // own launch — otherwise every test launches twice and waits ~2s for
+  // foreground each time
+  autoAppLaunch: false,
+
   // enable paralllelism on all tests, not just their files
   fullyParallel: true,
 
