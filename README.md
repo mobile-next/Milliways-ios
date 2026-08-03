@@ -7,9 +7,8 @@ A Swift iOS application inspired by The Restaurant at the End of the Universe. D
 ## Purpose
 
 This project serves as a testing environment for:
-- [mobilecli](https://github.com/mobile-next/mobilecli)
 - [Mobile MCP](https://github.com/mobile-next/mobile-mcp)
-- [Mobile Fleet MCP](https://docs.mobilenexthq.com/mobilefleet/introduction/)
+- [Mobile Next Cloud](https://mobilenext.ai/cloud)
 - [Mobilewright](https://github.com/mobile-next/mobilewright)
 
 The app features a food ordering flow with a space-themed menu, shopping cart, delivery tracking, and user account — providing various UI elements and scenarios for testing mobile automation capabilities.
@@ -37,4 +36,4 @@ make clean     # Clean build artifacts
 
 ## Community
 
-Join our [Slack](https://join.slack.com/t/mobile-next/shared_invite/zt-37fdhc001-CjZkz8QIZB8dSi486~F0uA), let's talk.
+Join our [Slack](https://mobilenext.ai/join-slack), let's talk.
