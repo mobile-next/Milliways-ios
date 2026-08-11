@@ -32,14 +32,14 @@ const config: MobilewrightConfig = {
       name: "ios-simulator",
       use: {
         platform: "ios",
-        installApps: ["../build/Milliways-simulator.zip"],
+        installApps: ["../ios/build/Milliways-simulator.zip"],
       },
     },
     {
       name: "ios",
       use: {
         platform: "ios",
-        installApps: ["../build/Milliways-unsigned.ipa"],
+        installApps: ["../ios/build/Milliways-unsigned.ipa"],
       }
     },
   ],

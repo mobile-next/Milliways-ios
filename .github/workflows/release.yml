@@ -1,4 +1,4 @@
-name: Build and Release IPA
+name: Build and Release
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  ios:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
@@ -27,5 +27,27 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: |
-            build/Milliways-unsigned.ipa
-            build/Milliways-simulator.zip
+            ios/build/Milliways-unsigned.ipa
+            ios/build/Milliways-simulator.zip
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '22'
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Build debug APK
+        run: make apk
+
+      - name: Upload artifact to release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: android/app/build/outputs/apk/debug/app-debug.apk
