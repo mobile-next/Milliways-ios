@@ -1,4 +1,5 @@
 import { defineConfig, type MobilewrightConfig } from 'mobilewright';
+import { MobileNextDriver } from '@mobilewright/driver-mobilenext';
 
 const config: MobilewrightConfig = {
   // tests are in the current directory
@@ -9,9 +10,6 @@ const config: MobilewrightConfig = {
 
   // extra headroom for fixture teardown
   timeout: 120_000,
-
-  // platform is required
-  platform: 'ios',
 
   // bundle identifier of our app under test
   bundleId: 'com.mobilenext.Milliways',
@@ -32,6 +30,7 @@ const config: MobilewrightConfig = {
       name: "ios-simulator",
       use: {
         platform: "ios",
+        deviceType: "simulator",
         installApps: ["../ios/build/Milliways-simulator.zip"],
       },
     },
@@ -39,6 +38,8 @@ const config: MobilewrightConfig = {
       name: "ios",
       use: {
         platform: "ios",
+        deviceType: "real",
+        osVersion: ">=18",
         installApps: ["../ios/build/Milliways-unsigned.ipa"],
       }
     },
@@ -54,10 +55,9 @@ const config: MobilewrightConfig = {
 // if environmet exists, we'll use mobilenext driver and allocate a device on the cloud
 // otherwise we run it on a device locally with mobilecli
 if (process.env['MOBILENEXT_API_KEY']) {
-  config.driver = {
-    type: 'mobilenext',
+  config.driver = new MobileNextDriver({
     apiKey: process.env['MOBILENEXT_API_KEY'],
-  };
+  });
 }
 
 export default defineConfig(config);
